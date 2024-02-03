@@ -1,4 +1,4 @@
-# made for myself - study purposes
+# 😎📚 made for myself - study purposes
 ### What you'll encounter:  
 Basically, this is a personal repository, which I use to test, study and run my own codes.  
 What I have here, are files type:
@@ -7,3 +7,5 @@ What I have here, are files type:
 - **React**
 - **C**/**C++**
 - **Swift**
+
+And even, some .xlsx files due to some of my .py projects.
