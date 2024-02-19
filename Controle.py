@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime
 from time import sleep
@@ -25,7 +26,7 @@ class GetInfo:
         self.current_time = None
         self.clean = None
         self.path = None
-        self.navegador = None
+        self.browser = None
         self.asin = None
 
     # Gets system information and gives the right attributes
@@ -58,6 +59,14 @@ class GetInfo:
             print(GREEN, sel)
         # Throw exception and get ValueError
         except ValueError as ve:
+            logger = logging.getLogger('example')
+            logging.error(f'Something weird happened: {ve}')
+            logging.info(f'This is info: {ve}')
+            logger.debug('This is a debug message')
+            logger.info('This is an info message')
+            logger.warning('This is a warning message')
+            logger.error('This is an error message')
+            logger.critical('This is a critical message')
             print(RED, 'Algo deu errado, tente mais tarde.', ve)
             sleep(2)
             quit()
@@ -95,7 +104,7 @@ class GetInfo:
         self.current_time = datetime.now()
         try:
             # Try to get price through CSS
-            raw_usd_price = self.navegador.find_element(By.CSS_SELECTOR, '.a-price').text
+            raw_usd_price = self.browser.find_element(By.CSS_SELECTOR, '.a-price').text
             print(VIOLET, 'What I got: ', raw_usd_price)
 
             # It formats the price tag to be Excel usable
@@ -107,18 +116,18 @@ class GetInfo:
                 self._price = float(cleaned_price)
                 print(GREEN, 'Replaced: ', self._price)
             # Try to get the product name through ID
-            self.p_name = self.navegador.find_element(By.ID, 'productTitle').text
+            self.p_name = self.browser.find_element(By.ID, 'productTitle').text
             print(VIOLET, 'Product name: ', self.p_name)
         except Exception as e:
             print(RED, f'Dedell, an error occurred: {e}{RESET}')
             _price = 0
 
         # Exchange Rate Data
-        self.navegador.get("https://www.google.com/finance/quote/BRL-USD?hl=en")
+        self.browser.get("https://www.google.com/finance/quote/BRL-USD?hl=en")
         # Tries to get it by CSS
         try:
             # TODO - Try and except, not working properly!
-            self.exc_BRL_USD = float(self.navegador.find_element(By.CSS_SELECTOR, '.fxKbKc').text, )
+            self.exc_BRL_USD = float(self.browser.find_element(By.CSS_SELECTOR, '.fxKbKc').text, )
             print(f'{VIOLET}Cotação atual: $ {self.exc_BRL_USD}')
         except ValueError as ve:
             self.exc_BRL_USD = float(0)
@@ -144,13 +153,13 @@ class GetInfo:
         # services = webdriver.chrome.service.Service(ChromeDriverManager().install())
 
         # Initialize Chrome Driver
-        self.navegador = webdriver.Chrome(options=options)
+        self.browser = webdriver.Chrome(options=options)
 
         # TODO - Do a FOR, if applicable, to search several ASINS at once
         site = f'https://www.amazon.com/dp/{self.asin}'
         print(site)
         # Get URL
-        self.navegador.get(site)
+        self.browser.get(site)
 
         # Runs Get Price and Name
         self.get_price_and_name()
@@ -167,7 +176,7 @@ class GetInfo:
         date = [str(self.current_time.strftime('%m/%d/%Y'))]
 
         # Check file existence, then, append/create new info:
-        excel_file = './Controle.xlsx'
+        excel_file = 'Controle.xlsx'
         if os.path.exists(excel_file):
 
             # Reads Excel; Creates a new DF that does not overwrite existing column data; Append data.
@@ -186,8 +195,8 @@ class GetInfo:
             print(f"{GREEN}Dedell, I've successfully created {new_df} with the received data{RESET}")
 
     def close_webdriver(self):
-        if self.navegador:
-            self.navegador.quit()
+        if self.browser:
+            self.browser.quit()
             print(GREEN, 'Navegador, fechado com sucesso!')
         else:
             print(YELLOW, 'Navegador, não rodou! (WebDriver)')
