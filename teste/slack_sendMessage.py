@@ -60,27 +60,31 @@ d = 'YEY!'
 
 messages = []
 current_message = ''
-for i in range(150):
-    phrase = f'\n{a} - {b} - {c} - {d}'
+for i in range(30):
+    phrase = f'{i} - {a} - {b} - {c} - {d}\n'
 
     # Check if current message + phrase fits within the limit
     if len(current_message + phrase) <= 4000:
+        print('Less than 4000')
         current_message += phrase
     else:
         # If overflow, add current message as a block and start a new one
-        messages.append(f"```{current_message}```")
-        current_message = phrase
+        print('Greater than 4000')
+        messages.append(f"{current_message}")
+
+        current_message = ''
+        current_message += phrase
 
 # Add the last message block even if it's less than 4000 characters
 if current_message:
-    messages.append(f"```{current_message}```")
+    messages.append(f"{current_message}")
 
 header = '_Summary_ of Partial update - *DAILY:*\n\n'
 footer = f"*Total Clients:* XX | *Accounts Failed:* XX"
 
 client.chat_postMessage(channel='U06GSVDJRCP', text=header)
 for message in messages:
-    client.chat_postMessage(channel='U06GSVDJRCP', text=message)  # Send each message as a code block
+    client.chat_postMessage(channel='U06GSVDJRCP', text=f"```{message}```")  # Send each message as a code block
     print('message:', message)
 client.chat_postMessage(channel='U06GSVDJRCP', text=footer)
 
