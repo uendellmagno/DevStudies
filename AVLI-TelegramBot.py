@@ -1,4 +1,5 @@
 import logging
+import os
 from urllib.parse import quote
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -10,6 +11,10 @@ from telegram.ext import (
     ContextTypes,
     CallbackQueryHandler,
 )
+from dotenv import load_dotenv
+
+load_dotenv()
+API_TOKEN = os.getenv("API_TOKEN")
 
 # Enable logging
 logging.basicConfig(
@@ -144,7 +149,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 def main() -> None:
     """Run the bot."""
-    application = Application.builder().token("7767112485:AAHR-k7qE7EN7Oph0hul5yPd5Z3kxoq-i3A").build()
+    application = Application.builder().token(API_TOKEN).build()
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
